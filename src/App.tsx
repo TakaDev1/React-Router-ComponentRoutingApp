@@ -11,14 +11,17 @@ import About from "./pages/About";
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <Navigation />
+      <div className="min-h-screen bg-gray-800 flex flex-col justify-center">
+        <BrowserRouter>
+          <h1>React-Router-ComponentRoutingApp</h1>
+          <Navigation />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </>
   );
 }
