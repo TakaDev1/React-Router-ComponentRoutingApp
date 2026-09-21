@@ -1,32 +1,145 @@
-# React + TypeScript + Vite
+# React Router Component Separation App
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React Routerの**ナビゲーション処理**と**ルーティング処理**を別々のコンポーネントに分離する練習アプリです。
 
-Currently, two official plugins are available:
+## 概要
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+`Navigation.tsx`にページ遷移用の`Link`をまとめ、`App.tsx`では`BrowserRouter`、`Routes`、`Route`を使ってルーティングを管理します。
 
-## React Compiler
+## ルーティング
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| URL      | ページ   |
+| -------- | ----- |
+| `/`      | Home  |
+| `/about` | About |
 
-## Expanding the Oxlint configuration
+## 学習内容
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+* コンポーネントの責務を分離する
+* `Navigation`コンポーネントでナビゲーションを管理する
+* `App`コンポーネントでルーティングを管理する
+* `Link`によるページ遷移
+* `BrowserRouter`、`Routes`、`Route`の役割
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## ディレクトリ構成
+
+```text
+src/
+├── components/
+│   └── Navigation.tsx
+├── pages/
+│   ├── Home.tsx
+│   └── About.tsx
+└── App.tsx
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 実装条件
+
+### Navigation.tsx
+
+`Link`を記述します。
+
+```tsx
+import { Link } from "react-router";
+
+const Navigation = () => {
+  return (
+    <nav>
+      <Link to="/">Home</Link>
+      <Link to="/about">About</Link>
+    </nav>
+  );
+};
+
+export default Navigation;
+```
+
+### App.tsx
+
+`BrowserRouter`、`Routes`、`Route`を記述します。
+
+```tsx
+import { BrowserRouter, Route, Routes } from "react-router";
+import Navigation from "./components/Navigation";
+import Home from "./pages/Home";
+import About from "./pages/About";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Navigation />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+## コンポーネントの責務
+
+### Navigation.tsx
+
+ナビゲーションを担当します。
+
+```text
+Navigation
+    ↓
+Link
+    ↓
+ページ移動
+```
+
+### App.tsx
+
+ルーティングを担当します。
+
+```text
+App
+ ↓
+BrowserRouter
+ ↓
+Routes
+ ↓
+Route
+ ↓
+ページ表示
+```
+
+## 実行
+
+```bash
+npm install
+npm run dev
+```
+
+以下のURLにアクセスして動作を確認します。
+
+```text
+http://localhost:5173/
+http://localhost:5173/about
+```
+
+`Navigation`のリンクから`Home`と`About`を相互に移動できれば完成です。
+
+## 課題のポイント
+
+この課題では、**ナビゲーションとルーティングの責務を分離すること**を目的とします。
+
+```text
+App.tsx
+├── BrowserRouter
+│
+├── Navigation
+│     └── Link
+│
+└── Routes
+      ├── Route "/"      → Home
+      └── Route "/about" → About
+```
+
+`Navigation.tsx`には`Link`、`App.tsx`にはルーティング処理を配置することで、それぞれの役割を明確にします。
